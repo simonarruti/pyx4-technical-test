@@ -1,0 +1,6 @@
+jest.config.js
+nodemon.json
+.env.test
+.eslintignore
+.eslintrc
+node_modules

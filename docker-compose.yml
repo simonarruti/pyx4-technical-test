@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  mongo_service:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+      
+  server-app:
+    container_name: pyx4-test-server-app
+    image: pyx4-test-server-image
+    depends_on:
+      - mongo_service
+    build:
+      context: ./server
+    environment:
+      MONGO_DB_HOST: mongo_service
+      DB_NAME: defaultDb
+      DB_COLLECTION_NAME: thoughts
+    ports:
+      - "3000:3000"
+
+  client-app:
+    container_name: pyx4-test-client-app
+    image: pyx4-test-client-image
+    build:
+      context: ./client
+    ports:
+      - "8080:80"
+    
+volumes:
+  mongodb:

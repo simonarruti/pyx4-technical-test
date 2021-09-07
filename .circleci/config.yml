@@ -1,0 +1,40 @@
+version: 2.1
+jobs:
+  test:
+    working_directory: ~/project/server
+    docker:
+      - image: cimg/node:16.8.0
+      - image: circleci/mongo
+    steps:
+      - checkout:
+          path: ~/project
+      - setup_remote_docker
+      - run:
+          name: Install project dependencies
+          command: npm ci
+
+      - run:
+          name: Run tests
+          command: npm test --runInBand
+          environment:
+            MONGO_DB_HOST: localhost
+            DB_NAME: defaultDb
+            DB_COLLECTION_NAME: thoughts
+  
+  build:
+    docker:
+      - image: cimg/node:16.8.0
+    steps:
+      - run:
+          name: Build images and deploy to cloud provider...
+          command: echo 'Ready to build and deploy'
+          
+workflows: 
+  test_and_build:
+    jobs:
+      - test:
+          name: "Test job"
+      - build:
+          name: "Build job"
+          requires:
+            - "Test job"
